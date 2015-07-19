@@ -1,0 +1,30 @@
+{
+  "name": "hubot-campfire",
+  "version": "0.1.0",
+  "description": "Hubot adapter for campfire.",
+  "main": "index.coffee",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/sergeyt/hubot-campfire"
+  },
+  "keywords": [
+    "hubot",
+    "adapter",
+    "campfire"
+  ],
+  "author": "Sergey Todyshev <stodyshev@gmail.com>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/sergeyt/hubot-campfire/issues"
+  },
+  "homepage": "https://github.com/sergeyt/hubot-campfire",
+  "peerDependencies": {
+    "hubot": ">=2.0"
+  },
+  "devDependencies": {
+    "coffee-script": "^1.6.3"
+  }
+}
