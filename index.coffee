@@ -267,7 +267,7 @@ class CampfireStreaming extends EventEmitter
                 try
                   data = JSON.parse part
                   logger.debug "json data: %s", json(data)
-                  body = data.body || {}
+                  body = if data.body then data.body.body || data.body else {}
                   type = data.type || data.name
                   if type == "message"
                     type = "TextMessage"
