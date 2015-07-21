@@ -251,6 +251,11 @@ class CampfireStreaming extends EventEmitter
             while (i = buf.indexOf("\r")) > -1 or (i = buf.indexOf("\n")) > -1
               part = buf.substr(0, i).trim()
               buf = buf.substr(i + 1)
+
+              # support text/event-stream
+              i = part.indexOf(":")
+              if i >= 0
+                part = part.substr(i + 1).trim()
               continue unless part
 
               if part
