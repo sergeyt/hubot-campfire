@@ -59,13 +59,15 @@ class Campfire extends Adapter
     withAuthor = (callback) ->
       (id, created, room, user, body) ->
         bot.User user, (err, userData) ->
-          if userData.user
-            author = self.robot.brain.userForId(userData.user.id, userData.user)
-            userId = userData.user.id
+          user = userData.user || user
+          logger.debug "user info: %s", json(user)
+          if user
+            author = self.robot.brain.userForId(user.id, user)
+            userId = user.id
             self.robot.brain.data
-              .users[userId].name = userData.user.name
+              .users[userId].name = user.name
             self.robot.brain.data
-              .users[userId].email_address = userData.user.email_address
+              .users[userId].email_address = user.email_address || user.email
             author.room = room
             callback id, created, room, user, body, author
 
