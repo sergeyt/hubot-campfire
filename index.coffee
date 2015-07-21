@@ -109,7 +109,7 @@ class Campfire extends Adapter
       bot.info = user
       bot.name = user.name
 
-      if bot.rooms.length == 0
+      unless bot.rooms
         logger.info "listening all rooms"
         bot.Rooms (err, rooms) ->
           bot.rooms = rooms.map (t) -> t.id
@@ -120,7 +120,7 @@ class Campfire extends Adapter
 
     listenRooms = () ->
       logger.info "listening rooms: %s", bot.rooms.join(",")
-      for roomId in bot.rooms
+      for roomId in bot.rooms.filter(identity)
         do (roomId) ->
           room = bot.Room(roomId)
           return unless room
@@ -151,7 +151,7 @@ class CampfireStreaming extends EventEmitter
       process.exit(1)
 
     @token         = options.token
-    @rooms         = (options.rooms || "").split(",")
+    @rooms         = (options.rooms || "").split(",").filter(identity)
     @account       = options.account
     @host          = @host || @account + ".campfirenow.com"
     @authorization = "Basic " + new Buffer("#{@token}").toString("base64")
