@@ -345,7 +345,7 @@ class CampfireStreaming extends EventEmitter
 
 identity = (t) -> t
 trim_slash = (s) ->
-  if s.chatAt(0) == '/'
+  if s.charAt(0) == '/'
     s = s.substr(1)
   if s.charAt(s.length - 1) == '/'
     s = s.substr(0, s.length - 1)
