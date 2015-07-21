@@ -11,6 +11,7 @@ class CampfireAdapter extends Adapter
         string()
         @send envelope, strings...
       else
+        @robot.logger.debug "send #{string} to room #{envelope.room}"
         @bot.Room(envelope.room).speak string, (err, data) =>
           @robot.logger.error "Campfire send error: #{err}" if err?
           @send envelope, strings...
