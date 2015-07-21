@@ -231,6 +231,8 @@ class CampfireStreaming extends EventEmitter
 
       request = self.http.request options, (response) ->
         response.setEncoding("utf8")
+        contentType = response.getHeader 'content-type'
+        sse = contentType == "text/event-stream"
 
         buf = ''
 
@@ -255,9 +257,10 @@ class CampfireStreaming extends EventEmitter
               buf = buf.substr(i + 1)
 
               # support text/event-stream
-              i = part.indexOf(":")
-              if i >= 0
-                part = part.substr(i + 1).trim()
+              if sse
+                i = part.indexOf(":")
+                if i >= 0
+                  part = part.substr(i + 1).trim()
               continue unless part
 
               if part
