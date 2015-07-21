@@ -42,7 +42,8 @@ class Campfire extends Adapter
         @send envelope, strings...
 
   run: ->
-    @robot.logger.info "loading custom campfire adapter"
+    logger = @robot.logger
+    logger.info "loading custom campfire adapter"
     self = @
 
     options =
@@ -100,7 +101,7 @@ class Campfire extends Adapter
 
     bot.Me (err, data) ->
       if err
-        self.logger.error "cannot get user info: %s", err
+        logger.error "cannot get user info: %s", err
         return
 
       user = data.user || data
