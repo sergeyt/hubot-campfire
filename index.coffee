@@ -45,6 +45,8 @@ class Campfire extends Adapter
     self = @
 
     options =
+      host:   process.env.HUBOT_CAMPFIRE_HOST
+      port:   process.env.HUBOT_CAMPFIRE_PORT
       token:   process.env.HUBOT_CAMPFIRE_TOKEN
       rooms:   process.env.HUBOT_CAMPFIRE_ROOMS
       account: process.env.HUBOT_CAMPFIRE_ACCOUNT
@@ -116,7 +118,7 @@ exports.use = (robot) ->
 
 class CampfireStreaming extends EventEmitter
   constructor: (options, @robot) ->
-    @port = optins.port
+    @port = options.port
     @host = options.host
 
     unless options.token? and options.account?
