@@ -3,7 +3,7 @@ HTTPS = require 'https'
 {EventEmitter} = require 'events'
 {Robot,Adapter,TextMessage,EnterMessage,LeaveMessage,TopicMessage} = require 'hubot'
 
-class Campfire extends Adapter
+class CampfireAdapter extends Adapter
   send: (envelope, strings...) ->
     if strings.length > 0
       string = strings.shift()
@@ -138,7 +138,7 @@ class Campfire extends Adapter
     self.emit "connected"
 
 exports.use = (robot) ->
-  new Campfire robot
+  new CampfireAdapter robot
 
 class CampfireStreaming extends EventEmitter
   constructor: (options, @robot) ->
