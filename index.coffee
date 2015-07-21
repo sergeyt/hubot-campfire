@@ -98,9 +98,25 @@ class Campfire extends Adapter
         bot.private[room] = false
 
     bot.Me (err, data) ->
-      bot.info = data.user
-      bot.name = bot.info.name
+      if err
+        self.logger.error "cannot get user info: %s", err
+        return
 
+      user = data.user || data
+      self.logger.info "loaded user info: %s", JSON.stringify(user)
+      bot.info = user
+      bot.name = user.name
+
+      if bot.rooms.length == 0
+        self.logger.info "listening all rooms"
+        bot.Rooms (err, rooms) ->
+          bot.rooms = rooms.map (t) -> t.id
+          listenRooms()
+        return
+
+      listenRooms()
+
+    listenRooms = () ->
       for roomId in bot.rooms
         do (roomId) ->
           bot.Room(roomId).join (err, callback) ->
