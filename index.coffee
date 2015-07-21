@@ -248,9 +248,10 @@ class CampfireStreaming extends EventEmitter
             # buffer across tcp packets and parse out lines
             buf += chunk
 
-            while (offset = buf.indexOf("\r")) > -1
-              part = buf.substr(0, offset)
-              buf = buf.substr(offset + 1)
+            while (i = buf.indexOf("\r")) > -1 or (i = buf.indexOf("\n")) > -1
+              part = buf.substr(0, i).trim()
+              buf = buf.substr(i + 1)
+              continue unless part
 
               if part
                 try
