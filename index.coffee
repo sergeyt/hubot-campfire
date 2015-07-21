@@ -263,8 +263,11 @@ class CampfireStreaming extends EventEmitter
                   data = JSON.parse part
                   logger.debug "json data: %s", json(data)
                   body = data.body || {}
+                  type = data.type || data.name
+                  if type == "message"
+                    type = "TextMessage"
                   self.emit(
-                    data.type || data.name,
+                    type,
                     data.id,
                     data.created_at,
                     data.room_id || body.room_id,
