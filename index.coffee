@@ -231,7 +231,7 @@ class CampfireStreaming extends EventEmitter
 
       request = self.http.request options, (response) ->
         response.setEncoding("utf8")
-        contentType = response.getHeader 'content-type'
+        contentType = response.headers['content-type']
         sse = contentType == "text/event-stream"
 
         buf = ''
