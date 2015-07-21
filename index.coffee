@@ -109,7 +109,7 @@ class Campfire extends Adapter
       bot.info = user
       bot.name = user.name
 
-      unless bot.rooms
+      unless bot.rooms and bot.rooms.length
         logger.info "listening all rooms"
         bot.Rooms (err, rooms) ->
           bot.rooms = rooms.map (t) -> t.id
