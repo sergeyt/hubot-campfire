@@ -41,6 +41,7 @@ class Campfire extends Adapter
         @send envelope, strings...
 
   run: ->
+    @robot.logger.info "loading custom campfire adapter"
     self = @
 
     options =
@@ -115,15 +116,18 @@ exports.use = (robot) ->
 
 class CampfireStreaming extends EventEmitter
   constructor: (options, @robot) ->
-    unless options.token? and options.rooms? and options.account?
+    @port = optins.port
+    @host = options.host
+
+    unless options.token? and options.account?
       @robot.logger.error \
-        "Not enough parameters provided. I need a token, rooms and account"
+        "Not enough parameters provided. I need a token and account"
       process.exit(1)
 
     @token         = options.token
-    @rooms         = options.rooms.split(",")
+    @rooms         = (options.rooms || "").split(",")
     @account       = options.account
-    @host          = @account + ".campfirenow.com"
+    @host          = @host || @account + ".campfirenow.com"
     @authorization = "Basic " + new Buffer("#{@token}:x").toString("base64")
     @private       = {}
 
@@ -259,7 +263,7 @@ class CampfireStreaming extends EventEmitter
     options =
       "agent"  : false
       "host"   : @host
-      "port"   : 443
+      "port"   : @port || 443
       "path"   : path
       "method" : method
       "headers": headers
