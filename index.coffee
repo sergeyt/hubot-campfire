@@ -267,6 +267,7 @@ class CampfireStreaming extends EventEmitter
                 try
                   data = JSON.parse part
                   logger.debug "json data: %s", json(data)
+                  room_id = data.room_id || data.body?.room_id
                   body = if data.body then data.body.body || data.body else {}
                   type = data.type || data.name
                   if type == "message"
@@ -275,7 +276,7 @@ class CampfireStreaming extends EventEmitter
                     type,
                     data.id,
                     data.created_at,
-                    data.room_id || body.room_id,
+                    room_id,
                     data.user_id || data.actor,
                     body
                   )
