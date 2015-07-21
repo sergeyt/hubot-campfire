@@ -255,13 +255,15 @@ class CampfireStreaming extends EventEmitter
               if part
                 try
                   data = JSON.parse part
+                  logger.debug "json data: %s", json(data)
+                  body = data.body || {}
                   self.emit(
-                    data.type,
+                    data.type || data.name,
                     data.id,
                     data.created_at,
-                    data.room_id,
-                    data.user_id,
-                    data.body
+                    data.room_id || body.room_id,
+                    data.user_id || data.actor,
+                    body
                   )
                 catch error
                   logger.error "Campfire data error: #{error}\n#{error.stack}"
