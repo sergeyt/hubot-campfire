@@ -353,4 +353,4 @@ trim_slash = (s) ->
 
 join_path = () ->
   args = [].slice.call(arguments)
-  args.filter(identity).map(trim_slash).filter(identity).join("/")
+  "/" + args.filter(identity).map(trim_slash).filter(identity).join("/")

@@ -1,6 +1,6 @@
 {
   "name": "hubot-campfire-adapter",
-  "version": "0.1.12",
+  "version": "0.1.13",
   "description": "hubot adapter for custom campfire-compatible backend",
   "main": "index.coffee",
   "scripts": {
