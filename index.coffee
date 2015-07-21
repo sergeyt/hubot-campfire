@@ -105,12 +105,12 @@ class Campfire extends Adapter
         return
 
       user = data.user || data
-      self.logger.info "loaded user info: %s", JSON.stringify(user)
+      logger.info "loaded user info: %s", JSON.stringify(user)
       bot.info = user
       bot.name = user.name
 
       if bot.rooms.length == 0
-        self.logger.info "listening all rooms"
+        logger.info "listening all rooms"
         bot.Rooms (err, rooms) ->
           bot.rooms = rooms.map (t) -> t.id
           listenRooms()
