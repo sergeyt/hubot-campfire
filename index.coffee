@@ -1,3 +1,4 @@
+HTTP = require 'http'
 HTTPS = require 'https'
 {EventEmitter} = require 'events'
 {Robot,Adapter,TextMessage,EnterMessage,LeaveMessage,TopicMessage} = require 'hubot'
@@ -151,6 +152,7 @@ class CampfireStreaming extends EventEmitter
     @host          = @host || @account + ".campfirenow.com"
     @authorization = "Basic " + new Buffer("#{@token}:x").toString("base64")
     @private       = {}
+    @http          = if @port == 443 then HTTPS else HTTP
 
   Rooms: (callback) ->
     @get "/rooms", callback
@@ -215,7 +217,7 @@ class CampfireStreaming extends EventEmitter
         "method" : "GET"
         "headers": headers
 
-      request = HTTPS.request options, (response) ->
+      request = self.http.request options, (response) ->
         response.setEncoding("utf8")
 
         buf = ''
@@ -297,7 +299,7 @@ class CampfireStreaming extends EventEmitter
       body = new Buffer(body)
       options.headers["Content-Length"] = body.length
 
-    request = HTTPS.request options, (response) ->
+    request = @http.request options, (response) ->
       data = ""
 
       response.on "data", (chunk) ->
@@ -309,8 +311,8 @@ class CampfireStreaming extends EventEmitter
             when 401
               throw new Error "Invalid access token provided"
             else
-              logger.error "Campfire HTTPS status code: #{response.statusCode}"
-              logger.error "Campfire HTTPS response data: #{data}"
+              logger.error "Campfire status code: #{response.statusCode}"
+              logger.error "Campfire response data: #{data}"
 
         if callback
           try
@@ -319,7 +321,7 @@ class CampfireStreaming extends EventEmitter
             callback null, data or { }
 
       response.on "error", (err) ->
-        logger.error "Campfire HTTPS response error: #{err}"
+        logger.error "Campfire response error: #{err}"
         callback err, { }
 
     if method is "POST" || method is "PUT"
