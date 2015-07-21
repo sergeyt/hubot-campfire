@@ -121,7 +121,9 @@ class Campfire extends Adapter
     listenRooms = () ->
       for roomId in bot.rooms
         do (roomId) ->
-          bot.Room(roomId).join (err, callback) ->
+          room = bot.Room(roomId)
+          return unless room
+          room.join (err, callback) ->
             bot.Room(roomId).listen()
 
     bot.on "reconnect", (roomId) ->
@@ -167,6 +169,10 @@ class CampfireStreaming extends EventEmitter
   Room: (id) ->
     self = @
     logger = @robot.logger
+
+    unless id
+      logger.error "empty room id"
+      return null
 
     show: (callback) ->
       self.get "/room/#{id}", callback
@@ -303,7 +309,7 @@ class CampfireStreaming extends EventEmitter
       options.headers["Content-Length"] = body.length
 
     logger.debug "request: %s", JSON.stringify(options, null, 2)
-    
+
     request = @http.request options, (response) ->
       data = ""
 
@@ -343,4 +349,4 @@ trim_slash = (s) ->
 
 join_path = () ->
   args = [].slice.call(arguments)
-  args.filter(identity).map(trim_slash).join("/")
+  args.filter(identity).map(trim_slash).filter(identity).join("/")
