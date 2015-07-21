@@ -45,10 +45,11 @@ class Campfire extends Adapter
     self = @
 
     options =
-      host:   process.env.HUBOT_CAMPFIRE_HOST
-      port:   process.env.HUBOT_CAMPFIRE_PORT
-      token:   process.env.HUBOT_CAMPFIRE_TOKEN
-      rooms:   process.env.HUBOT_CAMPFIRE_ROOMS
+      host: process.env.HUBOT_CAMPFIRE_HOST
+      port: process.env.HUBOT_CAMPFIRE_PORT || 443
+      prefix: process.env.HUBOT_CAMPFIRE_APIPREFIX
+      token: process.env.HUBOT_CAMPFIRE_TOKEN
+      rooms: process.env.HUBOT_CAMPFIRE_ROOMS
       account: process.env.HUBOT_CAMPFIRE_ACCOUNT
 
     bot = new CampfireStreaming(options, @robot)
@@ -120,6 +121,8 @@ class CampfireStreaming extends EventEmitter
   constructor: (options, @robot) ->
     @port = options.port
     @host = options.host
+    @prefix = options.prefix
+    @custom = options.host? or options.prefix?
 
     unless options.token? and options.account?
       @robot.logger.error \
@@ -182,16 +185,17 @@ class CampfireStreaming extends EventEmitter
 
     # listen for activity in channels
     listen: ->
+      host = if self.custom then self.host else "streaming.campfirenow.com"
       headers =
-        "Host"          : "streaming.campfirenow.com"
+        "Host"          : host
         "Authorization" : self.authorization
         "User-Agent"    : "Hubot/#{@robot?.version} (#{@robot?.name})"
 
       options =
         "agent"  : false
-        "host"   : "streaming.campfirenow.com"
-        "port"   : 443
-        "path"   : "/room/#{id}/live.json"
+        "host"   : host
+        "port"   : self.port
+        "path"   : join_path self.prefix, "/room/#{id}/live.json"
         "method" : "GET"
         "headers": headers
 
@@ -266,7 +270,7 @@ class CampfireStreaming extends EventEmitter
       "agent"  : false
       "host"   : @host
       "port"   : @port || 443
-      "path"   : path
+      "path"   : join_path @prefix, path
       "method" : method
       "headers": headers
 
@@ -309,3 +313,11 @@ class CampfireStreaming extends EventEmitter
 
     request.on "error", (err) ->
       logger.error "Campfire request error: #{err}"
+
+identity = (t) -> t
+trim_slash = (s) ->
+  if s.charAt(s.length - 1) == "/" then s.substr(0, s.length - 1) else s
+
+join_path = () ->
+  args = [].slice.call(arguments)
+  args.filter(identity).map(trim_slash).join("/")
