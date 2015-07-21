@@ -105,7 +105,7 @@ class Campfire extends Adapter
         return
 
       user = data.user || data
-      logger.info "loaded user info: %s", JSON.stringify(user)
+      logger.info "loaded user info: %s", json(user)
       bot.info = user
       bot.name = user.name
 
@@ -153,7 +153,7 @@ class CampfireStreaming extends EventEmitter
     @rooms         = (options.rooms || "").split(",")
     @account       = options.account
     @host          = @host || @account + ".campfirenow.com"
-    @authorization = "Basic " + new Buffer("#{@token}:x").toString("base64")
+    @authorization = "Basic " + new Buffer("#{@token}").toString("base64")
     @private       = {}
     @http          = if @port == 443 then HTTPS else HTTP
 
@@ -224,7 +224,7 @@ class CampfireStreaming extends EventEmitter
         "method" : "GET"
         "headers": headers
 
-      logger.debug "request: %s", JSON.stringify(options, null, 2)
+      logger.debug "request: %s", json(options)
 
       request = self.http.request options, (response) ->
         response.setEncoding("utf8")
@@ -308,7 +308,7 @@ class CampfireStreaming extends EventEmitter
       body = new Buffer(body)
       options.headers["Content-Length"] = body.length
 
-    logger.debug "request: %s", JSON.stringify(options, null, 2)
+    logger.debug "request: %s", json(options)
 
     request = @http.request options, (response) ->
       data = ""
@@ -354,3 +354,7 @@ trim_slash = (s) ->
 join_path = () ->
   args = [].slice.call(arguments)
   "/" + args.filter(identity).map(trim_slash).filter(identity).join("/")
+
+pretty_json = true
+json = (d) ->
+  if pretty_json then JSON.stringify(d, null, 2) else JSON.stringify(d)
