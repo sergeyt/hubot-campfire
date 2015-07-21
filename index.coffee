@@ -218,6 +218,8 @@ class CampfireStreaming extends EventEmitter
         "method" : "GET"
         "headers": headers
 
+      logger.debug "request: %s", JSON.stringify(options, null, 2)
+
       request = self.http.request options, (response) ->
         response.setEncoding("utf8")
 
@@ -300,6 +302,8 @@ class CampfireStreaming extends EventEmitter
       body = new Buffer(body)
       options.headers["Content-Length"] = body.length
 
+    logger.debug "request: %s", JSON.stringify(options, null, 2)
+    
     request = @http.request options, (response) ->
       data = ""
 
