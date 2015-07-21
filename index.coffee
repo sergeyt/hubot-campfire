@@ -51,7 +51,7 @@ class Campfire extends Adapter
       port: process.env.HUBOT_CAMPFIRE_PORT || 443
       prefix: process.env.HUBOT_CAMPFIRE_APIPREFIX
       token: process.env.HUBOT_CAMPFIRE_TOKEN
-      rooms: process.env.HUBOT_CAMPFIRE_ROOMS
+      rooms: process.env.HUBOT_CAMPFIRE_ROOMS || ""
       account: process.env.HUBOT_CAMPFIRE_ACCOUNT
 
     bot = new CampfireStreaming(options, @robot)
@@ -119,6 +119,7 @@ class Campfire extends Adapter
       listenRooms()
 
     listenRooms = () ->
+      logger.info "listening rooms: %s", bot.rooms.join(",")
       for roomId in bot.rooms
         do (roomId) ->
           room = bot.Room(roomId)
@@ -234,8 +235,12 @@ class CampfireStreaming extends EventEmitter
         response.on "data", (chunk) ->
           if chunk is ' '
             # campfire api sends a ' ' heartbeat every 3s
+            logger.debug "heartbeat"
+            return
 
-          else if chunk.match(/^\s*Access Denied/)
+          logger.debug "data: %s", chunk
+
+          if chunk.match(/^\s*Access Denied/)
             logger.error "Campfire error on room #{id}: #{chunk}"
 
           else
@@ -314,6 +319,7 @@ class CampfireStreaming extends EventEmitter
       data = ""
 
       response.on "data", (chunk) ->
+        logger.debug "data chunk: %s", chunk
         data += chunk
 
       response.on "end", ->
